@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.math.BigDecimal;
 
 /**
  * 
@@ -14,6 +15,7 @@ import java.time.LocalDate;
  */
 @NoArgsConstructor
 @Entity(name = "visits")
+@Table(name = "visits")
 @Data
 public class Visit {
 
@@ -26,6 +28,12 @@ public class Visit {
 
 	@Column(name = "description")
 	private String description;
+
+	@Column(name = "vet_id")
+	private Integer vetId;
+
+	@Column(name = "cost")
+	private BigDecimal cost;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pet_id")
