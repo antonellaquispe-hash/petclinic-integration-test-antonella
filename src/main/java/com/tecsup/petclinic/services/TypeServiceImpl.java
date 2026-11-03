@@ -3,6 +3,9 @@ package com.tecsup.petclinic.services;
 import com.tecsup.petclinic.dtos.TypeDTO;
 import com.tecsup.petclinic.entities.Type;
 import com.tecsup.petclinic.mapper.TypeMapper;
+import com.tecsup.petclinic.repositories.TypeRepository;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

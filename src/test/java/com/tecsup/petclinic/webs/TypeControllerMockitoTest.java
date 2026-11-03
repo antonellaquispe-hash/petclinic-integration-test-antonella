@@ -2,66 +2,78 @@ package com.tecsup.petclinic.webs;
 
 import com.tecsup.petclinic.dtos.TypeDTO;
 import com.tecsup.petclinic.services.TypeService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-public class TypeControllerMockitoTest {
+@AutoConfigureMockMvc
+@ActiveProfiles("h2")
+class TypeControllerMockitoTest {
+	@Autowired private MockMvc mockMvc;
+	@MockitoBean private TypeService typeService;
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Test
+	void testFindAll() throws Exception {
+		when(typeService.findAll()).thenReturn(List.of(new TypeDTO(1, "cat")));
+		mockMvc.perform(get("/types"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].name", is("cat")));
+		verify(typeService).findAll();
+	}
 
-    private TypeService typeServiceMock;
+	@Test
+	void testFindById() throws Exception {
+		when(typeService.findById(1)).thenReturn(new TypeDTO(1, "cat"));
+		mockMvc.perform(get("/types/1"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.name", is("cat")));
+	}
 
-    @BeforeEach
-    public void setUp() {
-        typeServiceMock = Mockito.mock(TypeService.class);
-    }
+	@Test
+	void testFindByIdNotFound() throws Exception {
+		when(typeService.findById(666)).thenReturn(null);
+		mockMvc.perform(get("/types/666")).andExpect(status().isNotFound());
+	}
 
-    @AfterEach
-    public void tearDown() {
-    }
+	@Test
+	void testCreate() throws Exception {
+		when(typeService.create(org.mockito.ArgumentMatchers.any(TypeDTO.class)))
+				.thenReturn(new TypeDTO(9, "fish"));
+		mockMvc.perform(post("/types").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"name\":\"fish\"}"))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id", is(9)))
+				.andExpect(jsonPath("$.name", is("fish")));
+	}
 
-    @Test
-    public void testFindAll() throws Exception {
-        Mockito.when(typeServiceMock.findAll()).thenReturn(java.util.Collections.emptyList());
-        mockMvc.perform(get("/types"))
-                .andExpect(status().isOk());
-    }
+	@Test
+	void testDelete() throws Exception {
+		when(typeService.findById(8)).thenReturn(new TypeDTO(8, "temporary"));
+		mockMvc.perform(delete("/types/8")).andExpect(status().isOk());
+		verify(typeService).delete(8);
+	}
 
-    @Test
-    public void testFindById() throws Exception {
-        TypeDTO dto = new TypeDTO();
-        dto.setId(1);
-        dto.setName("cat");
-        Mockito.when(typeServiceMock.findById(1)).thenReturn(dto);
-        mockMvc.perform(get("/types/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("cat")));
-    }
-
-    @Test
-    public void testFindByIdNotFound() throws Exception {
-        Mockito.when(typeServiceMock.findById(666)).thenReturn(null);
-        mockMvc.perform(get("/types/666"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testCreate() throws Exception {
-        TypeDTO newType = new TypeDTO();
-        newType.setName("fish");
-        Mockito.when(typeServiceMock.create(newType)).thenReturn(newType);
-        mockMvc.perform(post("/types")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"fish\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", is("fish")));
-    }
+	@Test
+	void testDeleteNotFound() throws Exception {
+		when(typeService.findById(1000)).thenReturn(null);
+		mockMvc.perform(delete("/types/1000")).andExpect(status().isNotFound());
+	}
 }
