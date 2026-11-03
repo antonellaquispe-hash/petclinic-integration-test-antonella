@@ -4,6 +4,7 @@ import com.tecsup.petclinic.entities.VetSpecialty;
 import com.tecsup.petclinic.exceptions.DuplicateVetSpecialtyException;
 import com.tecsup.petclinic.repositories.VetSpecialtyRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VetSpecialtyServiceImpl implements VetSpecialtyService {
@@ -20,6 +21,7 @@ public class VetSpecialtyServiceImpl implements VetSpecialtyService {
 	}
 
 	@Override
+	@Transactional
 	public void removeSpecialtyFromVet(Integer vetId, Integer specialtyId) {
 		repository.deleteByVetIdAndSpecialtyId(vetId, specialtyId);
 	}
