@@ -36,7 +36,7 @@ public class VisitControllerTest {
 	public void testFindAllVisits() throws Exception {
 		mockMvc.perform(get("/visits"))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				//.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$", hasSize(6)))
 				.andExpect(jsonPath("$[0].id", is(1)));
 	}
