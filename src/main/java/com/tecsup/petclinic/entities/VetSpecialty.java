@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
+@Table(name = "vet_specialties")
 public class VetSpecialty {
 
     @Id
