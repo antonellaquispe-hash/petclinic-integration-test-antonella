@@ -1,28 +1,25 @@
 package com.tecsup.petclinic.webs;
 
-import com.tecsup.petclinic.dtos.TypeDTO;
-import com.tecsup.petclinic.services.TypeService;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-// Para resolver MediaType (líneas 51 y 61)
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-// Para resolver hasSize, greaterThan e is (líneas 29, 36, 37 y 54)
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TypeControllerTest {
-
-    @Autowired
-    private TypeService typeService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,27 +47,23 @@ public class TypeControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        TypeDTO newType = new TypeDTO();
-        newType.setName("fish");
         mockMvc.perform(post("/types")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"fish\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"fish\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is("fish")));
     }
 
     @Test
     public void testDelete() throws Exception {
-        // First create a type
-        var mvcActions = mockMvc.perform(post("/types")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"testtype\"}"))
-                .andExpect(status().isCreated());
+        String response = mockMvc.perform(post("/types")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"testtype\"}"))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
 
-        String response = mvcActions.andReturn().getResponse().getContentAsString();
-        Integer id = Integer.parseInt(response.trim());
+        Integer id = JsonPath.read(response, "$.id");
 
-        // Then delete
         mockMvc.perform(delete("/types/" + id))
                 .andExpect(status().isNoContent());
     }

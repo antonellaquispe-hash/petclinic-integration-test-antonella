@@ -1,32 +1,29 @@
 package com.tecsup.petclinic.webs;
 
-import com.tecsup.petclinic.dtos.VetSpecialtyDTO;
-import com.tecsup.petclinic.services.VetSpecialtyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 public class VetSpecialtyControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private VetSpecialtyService vetSpecialtyService;
-
     @Test
     public void testAssignSpecialty() throws Exception {
-        VetSpecialtyDTO dto = new VetSpecialtyDTO();
-        dto.setVetId(1);
-        dto.setSpecialtyId(1);
         mockMvc.perform(post("/vet-specialties")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"vetId\":1,\"specId\":1}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"vetId\":1,\"specialtyId\":1}"))
                 .andExpect(status().isCreated());
     }
 
@@ -45,16 +42,16 @@ public class VetSpecialtyControllerTest {
     @Test
     public void testUpdateExperience() throws Exception {
         mockMvc.perform(put("/vet-specialties/1/1/experience")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"yearsExperience\":5}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"yearsExperience\":5}"))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testUpdateCertification() throws Exception {
         mockMvc.perform(put("/vet-specialties/1/1/certification")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"certificationDate\":\"2023-01-01\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"certificationDate\":\"2023-01-01\"}"))
                 .andExpect(status().isOk());
     }
 }
