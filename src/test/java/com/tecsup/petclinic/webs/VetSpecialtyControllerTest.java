@@ -3,9 +3,12 @@ package com.tecsup.petclinic.webs;
 import com.tecsup.petclinic.dtos.VetSpecialtyDTO;
 import com.tecsup.petclinic.services.VetSpecialtyService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.http.MediaType;
 
 @SpringBootTest
 public class VetSpecialtyControllerTest {
@@ -20,7 +23,7 @@ public class VetSpecialtyControllerTest {
     public void testAssignSpecialty() throws Exception {
         VetSpecialtyDTO dto = new VetSpecialtyDTO();
         dto.setVetId(1);
-        dto.setSpecId(1);
+        dto.setSpecialtyId(1);
         mockMvc.perform(post("/vet-specialties")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"vetId\":1,\"specId\":1}"))

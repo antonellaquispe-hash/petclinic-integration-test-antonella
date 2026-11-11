@@ -6,10 +6,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import org.springframework.http.MediaType;
 @SpringBootTest
 public class VetSpecialtyControllerMockitoTest {
 
@@ -31,7 +33,7 @@ public class VetSpecialtyControllerMockitoTest {
     public void testAssignSpecialty() throws Exception {
         VetSpecialtyDTO dto = new VetSpecialtyDTO();
         dto.setVetId(1);
-        dto.setSpecId(1);
+        dto.setSpecialtyId(1);
         Mockito.when(vetSpecialtyServiceMock.assignSpecialty(dto)).thenReturn(dto);
         mockMvc.perform(post("/vet-specialties")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -44,7 +46,7 @@ public class VetSpecialtyControllerMockitoTest {
         // First assignment
         VetSpecialtyDTO dto = new VetSpecialtyDTO();
         dto.setVetId(1);
-        dto.setSpecId(1);
+        dto.setSpecialtyId(1);
         Mockito.when(vetSpecialtyServiceMock.assignSpecialty(dto)).thenReturn(dto);
 
         mockMvc.perform(post("/vet-specialties")
