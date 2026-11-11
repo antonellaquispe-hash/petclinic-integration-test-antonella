@@ -8,6 +8,7 @@ import org.springframework.web.bind.*;
 // Agrega estas imports:
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.dao.DataIntegrityViolationException;
 
 
 @RestController
@@ -26,7 +27,7 @@ public class VetSpecialtyController {
         try {
             VetSpecialtyDTO created = vetSpecialtyService.assignSpecialty(vetSpecialtyDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (RuntimeException ex) {
+        } catch (IllegalStateException | DataIntegrityViolationException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
