@@ -6,6 +6,9 @@ import com.tecsup.petclinic.mapper.TypeMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+// Agrega estas imports:
+import org.springframework.stereotype.Service;
+import com.tecsup.petclinic.repositories.TypeRepository;
 
 @Service
 public class TypeServiceImpl implements TypeService {

@@ -5,6 +5,9 @@ import com.tecsup.petclinic.services.VetSpecialtyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.*;
+// Agrega estas imports:
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/vet-specialties")

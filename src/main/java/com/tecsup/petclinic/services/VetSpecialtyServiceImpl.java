@@ -5,6 +5,8 @@ import com.tecsup.petclinic.entities.VetSpecialty;
 import com.tecsup.petclinic.mapper.VetSpecialtyMapper;
 import com.tecsup.petclinic.repositories.VetSpecialtyRepository;
 import org.springframework.stereotype.Service;
+// Agrega esta import:
+import java.util.List;
 
 @Service
 public class VetSpecialtyServiceImpl implements VetSpecialtyService {
