@@ -17,3 +17,4 @@ public class Type {
     @Column(name = "name")
     private String name;
 }
+//probando el trigger
