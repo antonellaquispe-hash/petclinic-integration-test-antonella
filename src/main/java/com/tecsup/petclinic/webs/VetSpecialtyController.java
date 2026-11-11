@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.*;
 // Agrega estas imports:
 import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 @RestController
@@ -22,8 +23,12 @@ public class VetSpecialtyController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<VetSpecialtyDTO> assignSpecialty(@RequestBody VetSpecialtyDTO vetSpecialtyDTO) {
-        VetSpecialtyDTO created = vetSpecialtyService.assignSpecialty(vetSpecialtyDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        try {
+            VetSpecialtyDTO created = vetSpecialtyService.assignSpecialty(vetSpecialtyDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     @DeleteMapping("/{vetId}/{specId}")
@@ -41,7 +46,8 @@ public class VetSpecialtyController {
     @PutMapping("/{vetId}/{specId}/experience")
     public ResponseEntity<VetSpecialtyDTO> updateExperience(
             @PathVariable Integer vetId, @PathVariable Integer specId,
-            @RequestBody Integer yearsExperience) {
+            @RequestBody JsonNode body) {
+        Integer yearsExperience = body.isNumber() ? body.asInt() : body.path("yearsExperience").asInt();
         VetSpecialtyDTO dto = vetSpecialtyService.updateExperience(vetId, specId, yearsExperience);
         return ResponseEntity.ok(dto);
     }
@@ -49,7 +55,8 @@ public class VetSpecialtyController {
     @PutMapping("/{vetId}/{specId}/certification")
     public ResponseEntity<VetSpecialtyDTO> updateCertification(
             @PathVariable Integer vetId, @PathVariable Integer specId,
-            @RequestBody String certificationDate) {
+            @RequestBody JsonNode body) {
+        String certificationDate = body.isTextual() ? body.asText() : body.path("certificationDate").asText();
         VetSpecialtyDTO dto = vetSpecialtyService.updateCertification(vetId, specId, certificationDate);
         return ResponseEntity.ok(dto);
     }

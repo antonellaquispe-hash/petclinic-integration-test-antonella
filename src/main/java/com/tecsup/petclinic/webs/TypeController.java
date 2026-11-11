@@ -44,6 +44,9 @@ public class TypeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        if (typeService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
         typeService.delete(id);
         return ResponseEntity.noContent().build();
     }
